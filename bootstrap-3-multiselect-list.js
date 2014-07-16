@@ -120,7 +120,7 @@
                         text: $option.text(),
                         title: $option.attr('title')
                     }),
-                    $aRemove = $('<a href="#" class="pull-right"><i class="fa fa-times"></i></a>');
+                    $aRemove = $('<a href="#" class="pull-right"><i class="glyphicon glyphicon-remove"></i></a>');
 
                 $aRemove.data('value', $option.attr('value'));
 
