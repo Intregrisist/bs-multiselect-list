@@ -88,9 +88,14 @@
             return false;
         }
 
+        var e = $.Event('selected.bs.multiselectlist', {
+            value: $option.attr('value'),
+            text: $option.text
+        });
+
         this.$element.find('option[value="'+$option.attr('value')+'"]').prop('selected','selected');
         $option.prop('selected', false);
-        this.$element.trigger('change');
+        this.$element.trigger('change').trigger(e);
         this.renderSelected();
 
         $option.hide();
@@ -155,8 +160,13 @@
         if(value) {
             var $option = this.$element.find('option[value="'+value+'"]');
             if($option.length >= 0) {
+                var e = $.Event('unselected.bs.multiselectlist', {
+                    value: $option.attr('value'),
+                    text: $option.text
+                });
+
                 $option.prop('selected', false);
-                this.$element.trigger('change');
+                this.$element.trigger('change').trigger(e);
                 this.renderSelected();
                 return true;
             }
@@ -179,7 +189,7 @@
 
     var old = $.fn.multiselectlist;
 
-    $.fn.multiselectlist = function (option) {
+    $.fn.multiselectlist = function (option, callback) {
         return this.each(function () {
             var $this   = $(this)
             var data    = $this.data('bs.multiselectlist')
@@ -190,7 +200,7 @@
 
             if(option == 'update') {
                 data.renderSelected()
-            } else if(typeof option == 'string') {
+            }else if(typeof option == 'string') {
                 data[option]()
             }
         })
@@ -206,9 +216,14 @@
         $.fn.multiselectlist = old;
         return this;
     }
-}(jQuery);
 
-// Load It UP!
-$('[data-toggle="multiselectlist"]').each(function () {
-    $(this).multiselectlist();
-});
+    // MULTISELECT DATA-API
+    // =================
+
+    $(window).on('load', function () {
+        $('select[data-toggle="multiselectlist"]').each(function () {
+            var $multiselectlist = $(this);
+            $multiselectlist.multiselectlist($multiselectlist.data());
+        })
+    })
+}(jQuery);
